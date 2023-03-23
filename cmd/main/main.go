@@ -9,12 +9,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Message struct {
-	Body string `json:"body"`
-}
-
-var message Message
-
 func main() {
 	r := mux.NewRouter()
 
