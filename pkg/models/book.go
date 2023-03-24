@@ -31,3 +31,15 @@ func GetBookById(id int64) Book {
 	db.Where("id = ?", id).Find(&book)
 	return book
 }
+
+func (createBook Book) CreateBook() Book {
+	db.NewRecord(createBook)
+	db.Create(&createBook)
+	return createBook
+}
+
+func DeleteBook(id int64) Book {
+	book := GetBookById(id)
+	db.Where("id = ?", id).Delete(&book)
+	return book
+}
