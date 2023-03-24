@@ -25,3 +25,9 @@ func GetAllBooks() []Book {
 	db.Find(&Books)
 	return Books
 }
+
+func GetBookById(id int64) Book {
+	var book Book
+	db.Where("id = ?", id).Find(&book)
+	return book
+}
