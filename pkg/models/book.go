@@ -43,3 +43,20 @@ func DeleteBook(id int64) Book {
 	db.Where("id = ?", id).Delete(&book)
 	return book
 }
+
+func (updatedItem Book) UpadteBook(id int64) Book {
+	currentBook := GetBookById(id)
+	if updatedItem.Name != "" {
+		currentBook.Name = updatedItem.Name
+	}
+
+	if updatedItem.Publication != "" {
+		currentBook.Publication = updatedItem.Publication
+	}
+	if updatedItem.Author != "" {
+		currentBook.Author = updatedItem.Author
+	}
+	// db.Model(&currentBook).Update("name", "I am going home")
+	db.Save(&currentBook)
+	return currentBook
+}
