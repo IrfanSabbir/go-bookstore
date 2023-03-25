@@ -18,6 +18,7 @@ func init() {
 	config.Connect()
 	db = config.GetDB()
 	db.AutoMigrate(&Book{})
+	db.LogMode(true)
 }
 
 func GetAllBooks() []Book {
