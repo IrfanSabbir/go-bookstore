@@ -12,13 +12,15 @@ type Book struct {
 	Name        string `gorm:"" json:"name"`
 	Author      string `json:"author"`
 	Publication string `json:"publication"`
+	UserId      int    `gorm:"not null"`
+	User        User
 }
 
 func init() {
 	config.Connect()
 	db = config.GetDB()
-	db.AutoMigrate(&Book{})
-	db.LogMode(true)
+	// db.Debug().AutoMigrate(&Book{})
+	// db.LogMode(true)
 }
 
 func GetAllBooks() []Book {
