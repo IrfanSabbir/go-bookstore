@@ -13,6 +13,7 @@ func main() {
 	r := mux.NewRouter()
 
 	routes.RegisterBookRoutes(r)
+	routes.RegisterUserRoutes(r)
 	http.Handle("/", r)
 
 	fmt.Printf("Starting server on 8080\n")
