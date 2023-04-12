@@ -7,9 +7,14 @@ import (
 
 	"github.com/IrfanSabbir/go-bookstore/pkg/routes"
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Could not load env")
+	}
 	r := mux.NewRouter()
 
 	routes.RegisterBookRoutes(r)
