@@ -10,17 +10,14 @@ import (
 
 type User struct {
 	gorm.Model
-	Name     string `gorm:"" json:"name"`
-	Email    string `gorm:"column:email;type:varchar(100);unique;not null"`
-	Password string `gorm:"column:password;string;not null"`
-	Role     string `gorm:"column:role;not null"`
-	Books    []Book `gorm:"foreignkey:UserId;on_delete:cascade"`
-}
-
-type AuthUserResponse struct {
-	user    User
-	message string
-	token   string
+	// ID        uint64    `gorm:"primary_key;auto_increment" json:"id"`
+	Name     string `gorm:"size:255;not null" json:"name"`
+	Email    string `gorm:"size:255;unique;not null" json:"email"`
+	Password string `gorm:"string;not null" json:"password"`
+	Role     string `gorm:"not null" json:"role"`
+	// CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	// UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	Books []Book `gorm:"foreignkey:UserId;constraint:OnDelete:CASCADE" json:"books"`
 }
 
 func init() {
@@ -70,19 +67,13 @@ func Login(email string, password string) User {
 	fmt.Println(existedUser)
 	if existedUser.Email == "" {
 		fmt.Println("Email not valid")
-		// return AuthUserResponse{user: existedUser, message: "Email not valid", token: ""}
 		return User{}
 	}
 
 	isMatched := CheckPasswordHsh(existedUser.Password, password)
 	if isMatched == false {
 		fmt.Println("PAssword not valid")
-		// return AuthUserResponse{user: existedUser, message: "PAssword not valid", token: ""}
 		return User{}
 	}
-	var response AuthUserResponse
-	response.user = existedUser
-	response.message = "Auth Successfull"
-	response.token = "this_is_temp_token"
 	return existedUser
 }

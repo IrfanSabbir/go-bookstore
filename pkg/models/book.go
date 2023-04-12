@@ -9,11 +9,14 @@ var db *gorm.DB
 
 type Book struct {
 	gorm.Model
-	Name        string `gorm:"" json:"name"`
-	Author      string `json:"author"`
-	Publication string `json:"publication"`
-	UserId      int    `gorm:"not null"`
-	User        User
+	// ID          uint64    `gorm:"primary_key;auto_increment" json:"id"`
+	Name        string `gorm:"size:255;not null" json:"name"`
+	Author      string `gorm:"size:255;not null" json:"author"`
+	Publication string `gorm:"size:255;not null" json:"publication"`
+	// CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	// UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	User   User   `json:"user"`
+	UserId uint64 `gorm:"not null" json:"user_id"`
 }
 
 func init() {
