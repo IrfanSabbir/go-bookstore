@@ -10,11 +10,16 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func init() {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Could not load env")
+	} else {
+		fmt.Println("Loaded all env")
 	}
+}
+
+func main() {
 	r := mux.NewRouter()
 
 	routes.RegisterBookRoutes(r)

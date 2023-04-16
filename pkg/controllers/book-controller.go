@@ -13,7 +13,31 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func getUserIdFromContext(r *http.Request) (int64, error) {
+	ctx := r.Context()
+	idString, ok := ctx.Value("user_id").(string)
+	if !ok {
+		return -1, fmt.Errorf("Unexpected id")
+	}
+	user_id, err := strconv.ParseInt(idString, 0, 0)
+	if err != nil {
+		return -1, fmt.Errorf("Unexpected id")
+	}
+	return user_id, nil
+
+}
+
 func GetBook(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("I am here")
+	user_id, err := getUserIdFromContext(r)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	fmt.Println("user id", user_id)
+
 	books := models.GetAllBooks()
 	res, _ := json.Marshal(books)
 	w.Header().Set("Content-Type", "application/json")
