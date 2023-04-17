@@ -28,16 +28,6 @@ func getUserIdFromContext(r *http.Request) (int64, error) {
 }
 
 func GetBook(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("I am here")
-	user_id, err := getUserIdFromContext(r)
-	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
-	fmt.Println("user id", user_id)
-
 	books := models.GetAllBooks()
 	res, _ := json.Marshal(books)
 	w.Header().Set("Content-Type", "application/json")
@@ -50,7 +40,10 @@ func GetBookById(w http.ResponseWriter, r *http.Request) {
 	bookId := vars["bookId"]
 	id, err := strconv.ParseInt(bookId, 0, 0)
 	if err != nil {
-		fmt.Println("error while parsing")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(err.Error()))
+		return
 	}
 
 	book := models.GetBookById(id)
@@ -61,9 +54,17 @@ func GetBookById(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateBook(w http.ResponseWriter, r *http.Request) {
+	user_id, err := getUserIdFromContext(r)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
 	createBook := models.Book{}
 	utils.ParseBody(r, &createBook)
-	cratedBook := createBook.CreateBook()
+	cratedBook := createBook.CreateBook(user_id)
 	res, _ := json.Marshal(cratedBook)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -71,10 +72,24 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteBook(w http.ResponseWriter, r *http.Request) {
+	user_id, err := getUserIdFromContext(r)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
 	vars := mux.Vars(r)
 	bookId := vars["bookId"]
 	id, _ := strconv.ParseInt(bookId, 0, 0)
-	deletedBook := models.DeleteBook(id)
+	deletedBook, err := models.DeleteBook(id, user_id)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte(err.Error()))
+		return
+	}
 	res, _ := json.Marshal(deletedBook)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -82,13 +97,25 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateBook(w http.ResponseWriter, r *http.Request) {
-
+	user_id, err := getUserIdFromContext(r)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(err.Error()))
+		return
+	}
 	vars := mux.Vars(r)
 	bookId := vars["bookId"]
 	id, _ := strconv.ParseInt(bookId, 0, 0)
 	updateBookItem := &models.Book{}
 	utils.ParseBody(r, updateBookItem)
-	updatedItem := updateBookItem.UpadteBook(id)
+	updatedItem, err := updateBookItem.UpadteBook(id, user_id)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte(err.Error()))
+		return
+	}
 	res, _ := json.Marshal(updatedItem)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

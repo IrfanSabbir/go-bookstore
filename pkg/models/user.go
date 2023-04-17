@@ -27,6 +27,16 @@ func init() {
 	// db.LogMode(true)
 }
 
+func GetUserById(id int64) (User, error) {
+	var user User
+	err := db.Select("id, name, role, email").Where("id = ?", id).First(&user).Error
+	if err != nil && err == gorm.ErrRecordNotFound {
+		return user, err
+	}
+
+	return user, nil
+}
+
 func GetUserByEmail(email string) User {
 	var user User
 	db.Where("email = ?", email).Find(&user)
