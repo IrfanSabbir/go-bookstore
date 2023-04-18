@@ -15,6 +15,8 @@ type Book struct {
 	Name        string `gorm:"size:255;not null" json:"name"`
 	Author      string `gorm:"size:255;not null" json:"author"`
 	Publication string `gorm:"size:255;not null" json:"publication"`
+	File        string `gorm:"size:255" json:"file"`
+
 	// CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	// UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	User   User   `json:"user"`
@@ -55,6 +57,7 @@ func (createBook Book) CreateBook(user_id int64) Book {
 		Author:      createBook.Author,
 		Publication: createBook.Publication,
 		User:        user,
+		File:        createBook.File,
 	}
 	db.NewRecord(bookRecord)
 	db.Create(&bookRecord)

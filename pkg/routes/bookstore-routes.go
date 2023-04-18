@@ -12,4 +12,6 @@ var RegisterBookRoutes = func(router *mux.Router) {
 	router.HandleFunc("/book/{bookId}", controllers.GetBookById).Methods("GET")
 	router.HandleFunc("/book/{bookId}", middleware.AuthMiddleware(controllers.UpdateBook)).Methods("PUT")
 	router.HandleFunc("/book/{bookId}", middleware.AuthMiddleware(controllers.DeleteBook)).Methods("DELETE")
+	router.HandleFunc("/book/upload", middleware.AuthMiddleware(controllers.UploadFile)).Methods("post")
+
 }
